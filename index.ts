@@ -1,15 +1,23 @@
 import "dotenv/config";
 
 import express from "express";
-import path from "node:path";
+import helmet from "helmet";
+import fs from "node:fs";
+import https from "node:https";
 import { mountTranslator } from "./neosTranslatorBridge";
 import { absolutePath } from "./pathUtils";
 import { createWebSocketServer } from "./submodules/neos-translator-server/src/index";
-import http from "node:http";
 
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(
+    {
+        key: fs.readFileSync(process.env.SSL_KEY!),
+        cert: fs.readFileSync(process.env.SSL_CERT!),
+    },
+    app
+);
 
+app.use(helmet());
 app.use(express.static(absolutePath("static")));
 
 const staticPaths: Readonly<Record<string, string>> = {
@@ -31,7 +39,7 @@ app.use("/", (req, res, next) => {
 
 mountTranslator(app);
 
-const wss = createWebSocketServer({ server });
+const wss = createWebSocketServer({ server: server });
 
 server.listen(3000, () => {
     console.log("Server started.");
