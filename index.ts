@@ -22,8 +22,9 @@ app.use(express.static(absolutePath("static")));
 
 const staticPaths: Readonly<Record<string, string>> = {
     "/": "pages/index.html",
-    "/kart/": "pages/kart.html",
-    "/neos/": "pages/neos.html",
+    "/kart": "pages/kart.html",
+    "/neos": "pages/neos.html",
+    "/neos/translator_info": "pages/neos/translator.html",
 };
 
 app.use("/", (req, res, next) => {
