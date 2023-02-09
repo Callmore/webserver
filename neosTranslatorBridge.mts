@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import { absolutePath } from "./pathUtils";
+import { absolutePath } from "./pathUtils.mjs";
 
 export function mountTranslator(app: Express) {
     app.get("/neos/translator/", (req, res) => {

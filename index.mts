@@ -4,9 +4,12 @@ import express from "express";
 import helmet from "helmet";
 import fs from "node:fs";
 import https from "node:https";
-import { mountTranslator } from "./neosTranslatorBridge";
-import { absolutePath } from "./pathUtils";
-import { createWebSocketServer } from "./submodules/neos-translator-server/src/index";
+import { addPath } from "./db.mjs";
+import { mountTranslator } from "./neosTranslatorBridge.mjs";
+import { absolutePath } from "./pathUtils.mjs";
+import * as wsserver from "./submodules/neos-translator-server/src/index.mjs";
+
+const SERVER_PORT = 3000;
 
 const app = express();
 const server = https.createServer(
@@ -33,15 +36,18 @@ app.use("/", (req, res, next) => {
         return;
     }
 
-    console.log("No static path for", req.path, "found.");
-
     next();
 });
 
 mountTranslator(app);
 
-const wss = createWebSocketServer({ server: server });
+const wss = wsserver.createWebSocketServer({ server: server });
 
-server.listen(3000, () => {
-    console.log("Server started.");
+app.use((req, res) => {
+    res.status(404).send("Page not found.");
+    addPath(req.headers["user-agent"] ?? "", req.url);
+});
+
+server.listen(SERVER_PORT, () => {
+    console.log(`Server started on port ${SERVER_PORT}.`);
 });
