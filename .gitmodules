@@ -1,6 +1,0 @@
-[submodule "submodules/neos-translator-client"]
-	path = submodules/neos-translator-client
-	url = https://github.com/Callmore/neos-translator-client
-[submodule "submodules/neos-translator-server"]
-	path = submodules/neos-translator-server
-	url = https://github.com/Callmore/neos-translator-server.git
