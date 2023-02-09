@@ -5,9 +5,7 @@ import helmet from "helmet";
 import fs from "node:fs";
 import https from "node:https";
 import { addPath } from "./db.mjs";
-import { mountTranslator } from "./neosTranslatorBridge.mjs";
 import { absolutePath } from "./pathUtils.mjs";
-import * as wsserver from "./submodules/neos-translator-server/src/index.mjs";
 
 const SERVER_PORT = 3000;
 
@@ -27,7 +25,7 @@ const staticPaths: Readonly<Record<string, string>> = {
     "/": "pages/index.html",
     "/kart": "pages/kart.html",
     "/neos": "pages/neos.html",
-    "/neos/translator_info": "pages/neos/translator.html",
+    "/neos/translator": "pages/neos/translator.html",
 };
 
 app.use("/", (req, res, next) => {
@@ -38,10 +36,6 @@ app.use("/", (req, res, next) => {
 
     next();
 });
-
-mountTranslator(app);
-
-const wss = wsserver.createWebSocketServer({ server: server });
 
 app.use((req, res) => {
     res.status(404).send("Page not found.");
