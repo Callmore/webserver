@@ -23,7 +23,8 @@ const server = https.createServer(
 );
 
 app.use(helmet());
-app.use("/neos/translator", cors());
+//TODO: SETUP CORS PROPPERLY!!!
+app.use(cors());
 app.use(express.static(absolutePath("static")));
 
 const staticPaths: Readonly<Record<string, string>> = {
