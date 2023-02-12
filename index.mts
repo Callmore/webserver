@@ -23,8 +23,15 @@ const server = https.createServer(
 );
 
 app.use(helmet());
-//TODO: SETUP CORS PROPPERLY!!!
-app.use(cors());
+// TODO: SETUP CORS PROPPERLY!!!
+app.use("/neos/translator", function (req, res, next) {
+    res.setHeader(
+        "Content-Security-Policy",
+        "default-src 'self'; style-src 'self' fonts.googleapis.com 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; connect-src *" /// DON@T EVEN DO THIS (probably)
+    );
+    next();
+});
+
 app.use(express.static(absolutePath("static")));
 
 const staticPaths: Readonly<Record<string, string>> = {
