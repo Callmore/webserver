@@ -6,6 +6,7 @@ import fs from "node:fs";
 import https from "node:https";
 import { addPath } from "./db.mjs";
 import { absolutePath } from "./pathUtils.mjs";
+import cors from "cors";
 
 import { createTranslatorRouter } from "./submodules/client/src/index.mjs";
 import { createWebSocketServer } from "./submodules/server/src/index.mjs";
@@ -22,6 +23,7 @@ const server = https.createServer(
 );
 
 app.use(helmet());
+app.use("/neos/translator", cors());
 app.use(express.static(absolutePath("static")));
 
 const staticPaths: Readonly<Record<string, string>> = {
