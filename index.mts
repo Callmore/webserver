@@ -7,6 +7,9 @@ import https from "node:https";
 import { addPath } from "./db.mjs";
 import { absolutePath } from "./pathUtils.mjs";
 
+import { createTranslatorRouter } from "./submodules/client/src/index.mjs";
+import { createWebSocketServer } from "./submodules/server/src/index.mjs";
+
 const SERVER_PORT = 3000;
 
 const app = express();
@@ -25,7 +28,6 @@ const staticPaths: Readonly<Record<string, string>> = {
     "/": "pages/index.html",
     "/kart": "pages/kart.html",
     "/neos": "pages/neos.html",
-    "/neos/translator": "pages/neos/translator.html",
 };
 
 app.use("/", (req, res, next) => {
@@ -37,10 +39,14 @@ app.use("/", (req, res, next) => {
     next();
 });
 
+app.use("/neos/", createTranslatorRouter("./submodules/client"));
+
 app.use((req, res) => {
     res.status(404).send("Page not found.");
     addPath(req.headers["user-agent"] ?? "", req.url);
 });
+
+const wss = createWebSocketServer({ server });
 
 server.listen(SERVER_PORT, () => {
     console.log(`Server started on port ${SERVER_PORT}.`);

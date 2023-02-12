@@ -4,11 +4,22 @@
     "description": "",
     "main": "index.mjs",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build:webserver": "tsc",
+        "build:client": "tsc --project submodules/client",
+        "build:client-translatorPage": "tsc --project submodules/client/translatorPage",
+        "build:server": "tsc --project submodules/server",
+        "build": "run-s build:*",
+        "dev:webserver": "tsc --watch",
+        "dev:client": "tsc --project submodules/client --watch",
+        "dev:client-translatorPage": "tsc --project submodules/client/translatorPage --watch",
+        "dev:server": "tsc --project submodules/server --watch",
+        "dev": "run-p dev:*",
+        "start": "node --enable-source-maps ."
     },
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "npm-run-all": "^4.1.5",
         "typescript": "^4.9.5"
     },
     "dependencies": {
