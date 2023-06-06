@@ -2,11 +2,8 @@ import "dotenv/config";
 
 import express from "express";
 import helmet from "helmet";
-import fs from "node:fs";
-import https from "node:https";
-import { addPath } from "./db.mjs";
+import http from "node:http";
 import { absolutePath } from "./pathUtils.mjs";
-import cors from "cors";
 
 import { createTranslatorRouter } from "./submodules/client/src/index.mjs";
 import { createWebSocketServer } from "./submodules/server/src/index.mjs";
@@ -14,13 +11,7 @@ import { createWebSocketServer } from "./submodules/server/src/index.mjs";
 const SERVER_PORT = 3000;
 
 const app = express();
-const server = https.createServer(
-    {
-        key: fs.readFileSync(process.env.SSL_KEY!),
-        cert: fs.readFileSync(process.env.SSL_CERT!),
-    },
-    app
-);
+const server = http.createServer({}, app);
 
 app.use(helmet());
 // TODO: SETUP CORS PROPPERLY!!!
@@ -53,7 +44,6 @@ app.use("/neos/", createTranslatorRouter("./submodules/client"));
 
 app.use((req, res) => {
     res.status(404).send("Page not found.");
-    addPath(req.headers["user-agent"] ?? "", req.url);
 });
 
 const wss = createWebSocketServer({ server });
